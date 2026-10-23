@@ -5,37 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Web Development Activity</title>
 
-  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --bs-body-font-family: "Inter", system-ui, sans-serif;
       --bs-body-bg: #f7f3ee;
-      --bs-body-color: #111;
-      --green-1: #2d5a45;
-      --green-2: #1e3d30;
-      --green-btn: #1e3a2d;
+      --green-dark: #1e3a2d;
     }
 
-    body { border-top: 3px solid #ebe6df; }
-    .container { max-width: 1040px; margin-left: auto !important; margin-right: auto !important; }
-    .card-wrap { max-width: 440px; }
-    .card { --bs-card-bg: #fff; }
-    .font-display { font-family: "Playfair Display", Georgia, serif; }
+    body {
+      border-top: 3px solid #ebe6df;
+    }
 
-    .intro { max-width: 400px; font-size: 0.9rem; line-height: 1.7; }
+    .container {
+      max-width: 1200px;
+    }
+
+    .font-display {
+      font-family: "Playfair Display", Georgia, serif;
+    }
+
+    .btn-back,
+    .btn-project {
+      display: inline-block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid var(--green-dark);
+      border-radius: 8px;
+      text-decoration: none;
+    }
+
+    .btn-back {
+      color: var(--green-dark);
+      padding: 0.5rem 1rem;
+    }
+
+    .btn-project {
+      color: #fff;
+      background: var(--green-dark);
+      padding: 0.7rem 1.2rem;
+    }
 
     .card-media {
       height: 210px;
-      background: linear-gradient(135deg, var(--green-1), var(--green-2));
+      background: var(--green-dark);
     }
-    .card-media img { max-width: 75%; max-height: 70%; object-fit: contain; }
+
+    .card-media img {
+      max-width: 75%;
+      max-height: 70%;
+      object-fit: contain;
+    }
 
     .tag {
       font-size: 0.75rem;
@@ -45,32 +69,21 @@
       border: 1px solid #ebe3d9;
     }
 
-    .card-text { font-size: 0.875rem; line-height: 1.75; color: #4a4a4a; }
-
-    .btn-project {
-      --bs-btn-bg: var(--green-btn);
-      --bs-btn-border-color: var(--green-btn);
-      --bs-btn-color: #fff;
-      --bs-btn-hover-bg: var(--green-1);
-      --bs-btn-hover-border-color: var(--green-1);
-      --bs-btn-hover-color: #fff;
-      --bs-btn-active-bg: var(--green-1);
-      --bs-btn-active-border-color: var(--green-1);
-      --bs-btn-active-color: #fff;
-      --bs-btn-border-radius: 8px;
-      --bs-btn-padding-x: 1.2rem;
-      --bs-btn-padding-y: 0.7rem;
-      --bs-btn-font-size: 0.875rem;
-      font-weight: 500;
+    .card-text {
+      font-size: 0.875rem;
+      line-height: 1.75;
+      color: #4a4a4a;
     }
   </style>
 </head>
 <body>
-  <section class="container py-5 my-lg-4" id="projects">
-    <h2 class="font-display fw-bold text-center mb-5">Web Development Activity</h2>
+  <section class="container px-3 px-md-4 py-4" id="projects">
+    <h2 class="font-display fw-bold text-center mb-4">Web Development Activity</h2>
 
-    <div class="card-wrap me-auto">
-      <div>
+    <a href="https://pcyriltiffanie.github.io/pcyriltiffanie.io/" class="btn-back mb-4">← Back</a>
+
+    <div class="row g-4">
+      <div class="col-12 col-md-6 col-lg-4">
         <article class="card h-100 border-0 shadow rounded-4 overflow-hidden">
           <div class="card-media d-flex align-items-center justify-content-center">
             <img src="Activity 1/ps5_project.png" alt="PlayStation 5">
@@ -86,12 +99,32 @@
 
             <h3 class="font-display fs-5 fw-semibold mb-2">Bento Project</h3>
             <p class="card-text mb-4">A bento-style showcase of the PlayStation 5 and its gear, from the console and DualSense controller to the Pulse 3D headset, game drive, and game library, built to adapt to desktop, tablet, and mobile.</p>
-            <a href="https://pcyriltiffanie.github.io/WebDev/Activity%201/bento.html" class="btn btn-project" target="_blank" rel="noopener noreferrer">View Project →</a>          </div>
+            <a href="https://pcyriltiffanie.github.io/WebDev/Activity%201/bento.html" class="btn-project" target="_blank" rel="noopener noreferrer">View Project →</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-12 col-md-6 col-lg-4">
+        <article class="card h-100 border-0 shadow rounded-4 overflow-hidden">
+          <div class="card-media d-flex align-items-center justify-content-center">
+            <img src="Activity 2/othres/brain_project.png" alt="Brain illustration for Psychology of Everyday Life">
+          </div>
+
+          <div class="card-body p-4">
+            <ul class="list-unstyled d-flex flex-wrap gap-2 mb-3">
+              <li><span class="badge rounded-pill tag px-2 py-2">Bootstrap 5</span></li>
+              <li><span class="badge rounded-pill tag px-2 py-2">HTML</span></li>
+              <li><span class="badge rounded-pill tag px-2 py-2">JavaScript</span></li>
+              <li><span class="badge rounded-pill tag px-2 py-2">JSON</span></li>
+            </ul>
+
+            <h3 class="font-display fs-5 fw-semibold mb-2">JSON Project</h3>
+            <p class="card-text mb-4">A JSON-driven page on the Psychology of Everyday Life, where topics are loaded from a JSON file and rendered dynamically to explore how the mind shapes our daily habits, choices, and behavior.</p>
+            <a href="https://pcyriltiffanie.github.io/WebDev/Activity%202/json.html" class="btn-project" target="_blank" rel="noopener noreferrer">View Project →</a>
+          </div>
         </article>
       </div>
     </div>
   </section>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
