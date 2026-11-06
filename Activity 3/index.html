@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dota 2 Hero Archive All</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Barlow:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link href="others/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <header class="text-center pt-4 px-3">
+        <h1 class="title-gold m-0">Dota 2 Hero Archive</h1>
+        <p class="text-secondary mb-2">Pick a hero to see their lore, abilities, stats, items, and voice</p>
+        <div class="orn"><i></i></div>
+    </header>
+
+    <div class="toolbar sticky-top py-2 px-3">
+        <div class="container-xxl d-flex flex-column gap-2 align-items-center">
+            <div class="d-flex flex-wrap gap-2 align-items-center justify-content-center w-100">
+                <a class="btn btn-blood cinzel" href="https://pcyriltiffanie.github.io/WebDev/index.html">&larr; Back</a>
+                <div class="search input-group p-1 flex-grow-1" style="max-width:380px;min-width:220px">
+                    <input id="q" class="form-control" type="search" placeholder="Search by name or ID"
+                        autocomplete="off" aria-label="Search heroes">
+                </div>
+                <button id="rnd" class="btn btn-blood cinzel">Random hero</button>
+            </div>
+            <div class="d-flex flex-wrap gap-2 align-items-center justify-content-center">
+                <div class="d-flex flex-wrap gap-2 justify-content-center" id="chips" role="group"
+                    aria-label="Filter by attribute"></div>
+                <select id="sort" class="form-select form-select-sm sel" aria-label="Sort heroes">
+                    <option value="az">A–Z</option>
+                    <option value="wr">Win rate</option>
+                    <option value="pop">Most picked</option>
+                    <option value="pro">Pro scene</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <main class="container-xxl py-4 pb-5">
+        <div id="msg" class="text-center text-secondary mb-3" role="status" style="min-height:1.6rem"></div>
+        <div class="row row-cols-2 row-cols-md-3 row-cols-xl-5 g-3" id="grid"></div>
+    </main>
+
+    <nav class="d-flex justify-content-center align-items-center gap-3 pb-5 d-none" id="pager"
+        aria-label="Page navigation">
+        <button id="pp" class="btn btn-gold cinzel">Previous</button>
+        <div class="cinzel fw-bold text-center text-gold" id="pg" style="min-width:8rem"></div>
+        <button id="np" class="btn btn-gold cinzel">Next</button>
+    </nav>
+
+    <footer class="text-center text-secondary small pb-4">Data from <a class="link-secondary"
+            href="https://docs.opendota.com/">OpenDota API</a>. Art, videos and voice lines belong to Valve.</footer>
+
+    <div class="modal fade" id="dlg" tabindex="-1" aria-labelledby="dname" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header justify-content-between">
+                    <button class="btn btn-blood btn-sm cinzel" id="prev" aria-label="Previous hero">Prev</button>
+                    <span class="text-secondary" id="pos"></span>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-blood btn-sm cinzel" id="next" aria-label="Next hero">Next</button>
+                        <button class="btn btn-gold btn-sm cinzel" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                    </div>
+                </div>
+                <div class="modal-body" id="mbody">
+                    <div class="row g-3" id="dgrid">
+                        <div class="col-lg-6 order-lg-1" id="stageCol">
+                            <section class="panel stage h-100 p-4 d-flex align-items-center justify-content-center text-center position-relative overflow-hidden">
+                                <div class="position-relative w-100">
+                                    <div class="portrait position-relative">
+                                        <video id="video" autoplay loop muted playsinline></video>
+                                        <img id="img" alt="" class="d-none">
+                                    </div>
+                                    <h2 class="hero-name m-0 pt-2" id="dname"></h2>
+                                    <div class="bar"></div>
+                                    <div class="attr-label" id="dattr"></div>
+                                    <div class="text-secondary mt-3" id="vmsg" role="status" style="min-height:1.3rem"></div>
+                                    <button id="replay" class="btn btn-blood btn-sm cinzel mt-1"
+                                        aria-label="Play another voice line">&#8635; Another voice line</button>
+                                </div>
+                            </section>
+                        </div>
+                        <div class="col-lg-6 order-lg-2" id="aboutCol">
+                            <section class="panel h-100 p-4 d-flex flex-column justify-content-center align-items-center text-center" id="about"></section>
+                        </div>
+                        <div class="col-lg-6 order-lg-3"><section class="panel h-100 p-4" id="attrs"></section></div>
+                        <div class="col-lg-6 order-lg-4"><section class="panel h-100 p-4" id="stats"></section></div>
+                        <div class="col-12 order-lg-5"><section class="panel p-4" id="meta"></section></div>
+                        <div class="col-12 order-lg-5"><section class="panel p-4" id="abil"></section></div>
+                        <div class="col-12 order-lg-5"><section class="panel p-4" id="itm"></section></div>
+                        <div class="col-12 order-lg-5"><section class="panel p-4" id="mu"></section></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const A = { str: { label: 'Strength', color: '#ec3d06' }, agi: { label: 'Agility', color: '#26e030' }, int: { label: 'Intelligence', color: '#00d9ff' }, all: { label: 'Universal', color: '#c07cf0' } };
+        const IMG = 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/';
+        const VID = 'https://cdn.cloudflare.steamstatic.com/apps/dota2/videos/dota_react/heroes/renders/';
+        const HF = 'https://huggingface.co/datasets/Sqls1/dota2-sounds';
+        const $ = id => document.getElementById(id);
+        const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const cap = t => t ? t[0].toUpperCase() + t.slice(1) : '';
+        const num = n => Number.isInteger(n) ? n : Number(n).toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+        const st = (l, x) => `<div class="col"><div class="stat h-100"><small class="d-block">${l}</small><b>${x}</b></div></div>`;
+        const STATS = 'row row-cols-2 row-cols-sm-4 g-2';
+        const getJSON = async u => { try { const r = await fetch(u); return r.ok ? await r.json() : null } catch (e) { return null } };
+
+        let heroes = [], shown = [], attr = 'any', cur = null, loreP = null;
+
+        const API = 'https://api.opendota.com/api/', CDN = 'https://cdn.cloudflare.steamstatic.com', ITM = CDN + '/apps/dota2/images/dota_react/items/';
+        const BR = ['Herald', 'Guardian', 'Crusader', 'Archon', 'Legend', 'Ancient', 'Divine', 'Immortal']; const S = {};
+        const cacheGet = (k, ttl) => { try { const o = JSON.parse(localStorage.getItem(k)); return o && Date.now() - o.t < ttl ? o.v : null } catch (e) { return null } };
+        const cacheSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify({ t: Date.now(), v })) } catch (e) { } };
+        const skeleton = () => Array(15).fill('<div class="col"><div class="card hc w-100 h-100 text-center placeholder-glow" aria-hidden="true"><div class="ratio ratio-16x9"><span class="placeholder rounded-0"></span></div><div class="card-body p-0 pt-2 pb-2"><span class="placeholder col-8"></span><br><span class="placeholder col-5 mt-1"></span></div></div></div>').join('');
+        let statsDone = false;
+        const skText = (...ws) => `<span class="placeholder-glow d-block w-100" aria-hidden="true">${ws.map(w => `<span class="placeholder col-${w} d-block mb-2"></span>`).join('')}</span>`;
+        const skHead = '<h3><span class="placeholder-glow"><span class="placeholder col-3"></span></span></h3>';
+        const skBox = (n, h, cls = 'col') => `<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-2 placeholder-glow" aria-hidden="true">${`<div class="${cls}"><span class="placeholder w-100 rounded" style="height:${h}px"></span></div>`.repeat(n)}</div>`;
+        const skBars = `<div class="d-flex gap-2 placeholder-glow" aria-hidden="true">${'<span class="placeholder flex-fill rounded" style="height:90px"></span>'.repeat(8)}</div>`;
+        const skIcons = `<div class="d-flex flex-wrap gap-1 py-2 placeholder-glow" aria-hidden="true">${'<span class="placeholder rounded" style="width:44px;height:32px"></span>'.repeat(7)}</div>`;
+        async function load() {
+            $('grid').innerHTML = skeleton();
+            let data = cacheGet('dota:heroes', 7 * 864e5);
+            if (!data) { data = await getJSON(API + 'constants/heroes'); if (data) cacheSet('dota:heroes', data) }
+            if (!data) { $('grid').innerHTML = ''; $('msg').textContent = 'Couldn’t load heroes. Check your connection and refresh.'; return }
+            heroes = Object.values(data).map(h => ({ ...h, short: h.name.replace('npc_dota_hero_', '') })).sort((a, b) => a.localized_name.localeCompare(b.localized_name));
+            buildChips(); filter(); fromHash();
+            loadStats();
+        }
+
+        async function loadStats() {
+            const c = cacheGet('dota:stats', 36e5);
+            if (c) Object.assign(S, c);
+            else {
+                const stats = await getJSON(API + 'heroStats');
+                (stats || []).forEach(x => {
+                    const b = BR.map((_, i) => { const p = x[(i + 1) + '_pick'] || 0; return { p, wr: p ? (x[(i + 1) + '_win'] || 0) / p * 100 : 0 } });
+                    const pick = b.reduce((a, y) => a + y.p, 0), win = BR.reduce((a, _, i) => a + (x[(i + 1) + '_win'] || 0), 0);
+                    S[x.id] = { b, pick, wr: pick ? win / pick * 100 : 0, pp: x.pro_pick || 0, pw: x.pro_win || 0, pb: x.pro_ban || 0 }
+                });
+                if (Object.keys(S).length) cacheSet('dota:stats', S);
+            }
+            statsDone = true;
+            if ($('sort').value === 'az') render(); else filter();
+            if (cur && isOpen) renderMeta(cur);
+            (window.requestIdleCallback || setTimeout)(() => { getConst(); getLore() }, { timeout: 3000 });
+        }
+        function buildChips() {
+            const n = k => k === 'any' ? heroes.length : heroes.filter(h => h.primary_attr === k).length;
+            $('chips').innerHTML = [['any', 'All', '#d4af61'], ...Object.entries(A).map(([k, v]) => [k, v.label, v.color])]
+                .map(([k, l, c]) => `<button class="btn btn-sm chip" data-k="${k}" style="--c:${c}" aria-pressed="${k === attr}"><i></i>${l} ${n(k)}</button>`).join('');
+        }
+        const PER = 15; let page = 1;
+        function filter() {
+            const q = $('q').value.trim().toLowerCase();
+            shown = heroes.filter(h => (attr === 'any' || h.primary_attr === attr) && (!q || String(h.id) === q || h.localized_name.toLowerCase().includes(q)));
+            const key = { wr: h => S[h.id]?.wr || 0, pop: h => S[h.id]?.pick || 0, pro: h => S[h.id] ? S[h.id].pp + S[h.id].pb : 0 }[$('sort').value];
+            if (key) shown = shown.slice().sort((a, b) => key(b) - key(a));
+            page = 1; render();
+        }
+        function render() {
+            const q = $('q').value.trim(), last = Math.max(1, Math.ceil(shown.length / PER));
+            $('msg').textContent = '';
+            $('grid').innerHTML = shown.length ? shown.slice((page - 1) * PER, page * PER).map((h, n) => {
+                const i = A[h.primary_attr] || A.all;
+                return `<div class="col"><button class="card hc w-100 h-100 text-center" data-id="${h.id}" style="--attr:${i.color}"><div class="th position-relative overflow-hidden w-100"><div class="ratio ratio-16x9"><img class="object-fit-cover" src="${IMG}${h.short}.png" alt="" decoding="async" loading="${n < 10 ? 'eager' : 'lazy'}"></div>${S[h.id] ? `<span class="badge rounded-0 wr position-absolute top-0 end-0 m-1">${S[h.id].wr.toFixed(1)}%</span>` : ''}</div><div class="card-body w-100 p-0 pt-2 pb-2"><div class="nm px-1">${esc(h.localized_name)}</div><small class="d-block fw-semibold">${i.label}</small></div></button></div>`;
+            }).join('') : `<div class="col-12 text-center text-secondary cinzel fs-5 py-5">No hero matches “${esc(q)}”. Try another name or clear the filter.</div>`;
+            $('pager').classList.toggle('d-none', last < 2); $('pg').textContent = `Page ${page} of ${last}`;
+        }
+        function go(n) { const last = Math.max(1, Math.ceil(shown.length / PER)); page = n < 1 ? last : n > last ? 1 : n; render(); scrollTo({ top: 0, behavior: 'smooth' }) }
+        $('pp').onclick = () => go(page - 1); $('np').onclick = () => go(page + 1);
+        $('chips').addEventListener('click', e => {
+            const b = e.target.closest('.chip'); if (!b) return; attr = b.dataset.k;
+            document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === b)); filter()
+        });
+        $('q').addEventListener('input', filter); $('sort').addEventListener('change', filter);
+        $('q').addEventListener('keydown', e => { if (e.key === 'Enter' && shown.length) openHero(shown[0]) });
+        $('grid').addEventListener('click', e => { const c = e.target.closest('.hc'); if (c) openHero(heroes.find(h => h.id == c.dataset.id)) });
+        $('rnd').addEventListener('click', () => { const l = shown.length ? shown : heroes; if (l.length) openHero(l[Math.floor(Math.random() * l.length)]) });
+
+        const d = $('dlg'), modal = new bootstrap.Modal(d); let isOpen = false;
+        d.addEventListener('show.bs.modal', () => { isOpen = true });
+        function openHero(h) {
+            audio.src = SILENT; audio.play().catch(() => { });
+            cur = h; const i = A[h.primary_attr] || A.all;
+            d.style.setProperty('--attr', i.color);
+            const flip = h.primary_attr === 'str' || h.primary_attr === 'agi';
+            $('stageCol').classList.toggle('order-lg-1', !flip); $('stageCol').classList.toggle('order-lg-2', flip);
+            $('aboutCol').classList.toggle('order-lg-2', !flip); $('aboutCol').classList.toggle('order-lg-1', flip);
+            const v = $('video'), im = $('img');
+            im.src = IMG + h.short + '.png'; im.alt = h.localized_name; im.classList.add('d-none'); v.classList.remove('d-none');
+            v.onerror = () => { v.classList.add('d-none'); im.classList.remove('d-none') };
+            v.src = VID + h.short + '.webm'; v.play().catch(() => { });
+            $('dname').textContent = h.localized_name; $('dattr').textContent = i.label;
+            const l = shown.includes(h) ? shown : heroes; $('pos').textContent = `${l.indexOf(h) + 1} of ${l.length}`;
+
+            const pills = [h.attack_type && `<span class="badge rounded-pill px-3 py-2 pill">${esc(cap(h.attack_type))}</span>`, ...(h.roles || []).map(r => `<span class="badge rounded-pill px-3 py-2 pill plain">${esc(r)}</span>`)].filter(Boolean).join('');
+            const box = (k, t) => `<div class="attrbox d-flex align-items-center gap-3 px-3 py-2 ${h.primary_attr === k ? 'main' : ''}" style="--c:${A[k].color}"><small class="flex-grow-1">${t}</small><b>${num(h['base_' + k])}</b><span class="text-end">+${num(h[k + '_gain'])} per level</span></div>`;
+            $('about').innerHTML = `<h3>About ${esc(h.localized_name)}</h3><p class="lore w-100" id="lore">${skText(12, 12, 10, 8)}</p><div class="d-flex flex-wrap gap-2 justify-content-center mt-3">${pills}</div>`;
+            $('attrs').innerHTML = h.base_str !== undefined ? `<h3>Attributes</h3><div class="d-grid gap-2">${box('str', 'STRENGTH')}${box('agi', 'AGILITY')}${box('int', 'INTELLIGENCE')}</div>` : '';
+            $('stats').innerHTML = h.base_armor !== undefined ? `<h3>Base stats</h3><div class="${STATS} row-cols-lg-3 row-cols-xl-4">${st('Damage', `${h.base_attack_min}–${h.base_attack_max}`)}${st('Armor', num(h.base_armor))}${st('Magic resist', num(h.base_mr) + '%')}${st('Move speed', h.move_speed)}${st('Attack range', h.attack_range)}${st('Attack time', num(h.attack_rate) + 's')}${st('Health regen', num(h.base_health_regen))}${st('Mana regen', num(h.base_mana_regen))}</div><p class="text-secondary small text-center mt-2 mb-0">Base values, before attributes and items.</p>` : '';
+            showLore(h); extras(h);
+
+            if (!isOpen) modal.show();
+            $('mbody').scrollTop = 0;
+            if (location.hash !== '#' + h.short) history.replaceState(null, '', '#' + h.short);
+            playVoice(h);
+        }
+
+        let constP = null;
+        const getConst = () => constP || (constP = Promise.all([getJSON(API + 'constants/abilities'), getJSON(API + 'constants/hero_abilities'), getJSON(API + 'constants/item_ids')]).then(r => { if (!r[0] || !r[1]) constP = null; return r }));
+        const put = (id, html) => { if ($(id)) $(id).innerHTML = html };
+        function renderMeta(h) {
+            const s = S[h.id];
+            put('meta', s ? `<h3>Win rate by rank</h3><div class="brk">${s.b.map((b, i) => `<div><b>${b.p ? b.wr.toFixed(1) + '%' : '–'}</b><i style="height:${Math.max(4, Math.min(100, (b.wr - 40) * 5))}%"></i><small>${BR[i]}</small></div>`).join('')}</div><div class="${STATS} mt-3">${st('Public picks', s.pick.toLocaleString())}${st('Pro picks', s.pp)}${st('Pro wins', s.pw)}${st('Pro bans', s.pb)}</div>` : statsDone ? '' : `<h3>Win rate by rank</h3>${skBars}`);
+        }
+        function extras(h) {
+            put('abil', skHead + skBox(6, 64));
+            put('itm', skHead + skIcons + skIcons + skIcons);
+            put('mu', skHead + skBox(5, 40, 'col-md-6'));
+            renderMeta(h);
+            getConst().then(([AB, HA]) => {
+                if (cur !== h) return;
+                const L = (HA && HA[h.name] && HA[h.name].abilities) || [];
+                const rows = L.filter(a => AB && AB[a] && AB[a].dname && AB[a].img && !String(AB[a].behavior || '').includes('Hidden')).map(a => { const x = AB[a]; return `<div class="col"><div class="ab d-flex gap-3 p-2 h-100" title="Click to expand"><img src="${CDN}${x.img}" alt="" loading="lazy"><div><b>${esc(x.dname)}</b><p>${esc(String(x.desc || '').replace(/[ \t]+/g, ' '))}</p></div></div></div>` }).join('');
+                put('abil', rows ? `<h3>Abilities</h3><div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-2">${rows}</div>` : '');
+            });
+            Promise.all([getJSON(API + `heroes/${h.id}/itemPopularity`), getConst()]).then(([P, c]) => {
+                if (cur !== h) return;
+                const N = (c && c[2]) || {};
+                const html = P ? [['start_game_items', 'Starting'], ['early_game_items', 'Early'], ['mid_game_items', 'Core'], ['late_game_items', 'Late']].map(([k, l]) => {
+                    const e = Object.entries(P[k] || {}).sort((a, b) => b[1] - a[1]).filter(([id]) => N[id]).slice(0, 7);
+                    return e.length ? `<div class="ph d-flex align-items-center gap-3 py-2"><small>${l}</small><div class="d-flex flex-wrap gap-1">${e.map(([id]) => `<img src="${ITM}${N[id]}.png" title="${esc(N[id].replace(/_/g, ' '))}" alt="" loading="lazy" onerror="this.remove()">`).join('')}</div></div>` : '';
+                }).join('') : '';
+                put('itm', html ? `<h3>Popular items</h3>${html}` : '');
+            });
+            getJSON(API + `heroes/${h.id}/matchups`).then(M => {
+                if (cur !== h) return;
+                const m = (M || []).filter(x => x.games_played >= 100 && heroes.some(y => y.id == x.hero_id)).map(x => ({ ...x, wr: x.wins / x.games_played * 100 })).sort((a, b) => b.wr - a.wr);
+                const card = x => { const o = heroes.find(y => y.id == x.hero_id); return `<button class="mu btn d-flex align-items-center gap-2 w-100 mb-1 p-0 pe-2 text-start" data-id="${o.id}"><img src="${IMG}${o.short}.png" alt="" loading="lazy"><span class="flex-grow-1 fw-semibold">${esc(o.localized_name)}</span><b>${x.wr.toFixed(1)}%</b></button>` };
+                put('mu', m.length > 10 ? `<h3>Matchups</h3><div class="row g-3"><div class="col-md-6"><small class="g d-block mb-2">${esc(h.localized_name)} wins most against</small>${m.slice(0, 5).map(card).join('')}</div><div class="col-md-6"><small class="rd d-block mb-2">${esc(h.localized_name)} struggles against</small>${m.slice(-5).reverse().map(card).join('')}</div></div>` : '');
+            });
+        }
+        d.addEventListener('click', e => {
+            const m = e.target.closest('.mu'); if (m) return openHero(heroes.find(h => h.id == m.dataset.id));
+            const a = e.target.closest('.ab'); if (a) a.classList.toggle('open');
+        });
+
+        const LORE_URLS = [
+            'https://api.opendota.com/api/constants/hero_lore',
+            'https://cdn.jsdelivr.net/gh/odota/dotaconstants@master/build/hero_lore.json',
+            'https://raw.githubusercontent.com/odota/dotaconstants/master/build/hero_lore.json'
+        ];
+        function getLore() {
+            if (loreP) return loreP;
+            loreP = (async () => {
+                for (const u of LORE_URLS) {
+                    const L = await getJSON(u);
+                    if (L && typeof L === 'object' && Object.keys(L).length) return L;
+                }
+                return null;
+            })();
+            loreP.then(L => { if (!L) loreP = null });
+            return loreP;
+        }
+        async function showLore(h) {
+            const el = $('lore'); if (!el) return;
+            const L = await getLore();
+            if (cur !== h || !$('lore')) return;
+            const text = L && (L[h.short] || L[h.localized_name.toLowerCase()]);
+            if (text) { $('lore').textContent = text; return }
+            if (!L) {
+                $('lore').innerHTML = 'Hindi ma-load ang lore. <button class="btn btn-sm btn-gold cinzel ms-2" id="retryLore">Subukan ulit</button>';
+                $('retryLore').onclick = () => { $('lore').innerHTML = skText(12, 12, 10, 8); showLore(h) };
+            } else $('lore').textContent = 'No lore available for this hero.';
+        }
+        function step(n) { const l = shown.includes(cur) ? shown : heroes; openHero(l[(l.indexOf(cur) + n + l.length) % l.length]) }
+        $('prev').onclick = () => step(-1); $('next').onclick = () => step(1);
+        d.addEventListener('hidden.bs.modal', () => { isOpen = false; const k = shown.indexOf(cur); if (k >= 0 && Math.floor(k / PER) + 1 !== page) { page = Math.floor(k / PER) + 1; render() } audio.pause(); soundToken++; $('video').removeAttribute('src'); history.replaceState(null, '', location.pathname + location.search) });
+        d.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1) });
+        function fromHash() { const s = location.hash.slice(1); const h = s && heroes.find(x => x.short === s); if (h) openHero(h) }
+        addEventListener('hashchange', () => { const s = location.hash.slice(1); if (!s) { if (isOpen) modal.hide() } else if (!cur || cur.short !== s) fromHash() });
+
+        const audio = new Audio(); let soundToken = 0, lastUrl = '';
+        const SILENT = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQAAAAA='; const lineCache = {};
+        const GOOD = /(spawn|respawn|move|attack|kill|battlebegins|taunt|laugh|first|select|pick|cast|win|rival|deny|lasthit|ally|bounty|rune|purch|bush|happy|haste|invis)/i;
+        const urlOf = p => `${HF}/resolve/main/${p.split('/').map(encodeURIComponent).join('/')}`;
+        async function getLines(short) {
+            if (lineCache[short]) return lineCache[short];
+            try { const s = JSON.parse(localStorage.getItem('dotaLines2:' + short) || 'null'); if (s && s.length) return lineCache[short] = s } catch (e) { }
+            const list = await getJSON(`https://huggingface.co/api/datasets/Sqls1/dota2-sounds/tree/main/sounds/vo/${encodeURIComponent(short)}?limit=300`);
+            if (!list) throw new Error('none');
+            const files = list.filter(f => f.type === 'file' && /\.mp3$/i.test(f.path)).map(f => f.path);
+            const good = files.filter(p => GOOD.test(p));
+            const lines = (good.length ? good : files).slice(0, 60);
+            lineCache[short] = lines; try { localStorage.setItem('dotaLines2:' + short, JSON.stringify(lines)) } catch (e) { }
+            return lines;
+        }
+        async function playVoice(h) {
+            const t = ++soundToken, m = $('vmsg'), prev = lastUrl; audio.pause(); lastUrl = ''; m.innerHTML = '<span class="placeholder-glow"><span class="placeholder col-4 rounded"></span></span>';
+            try {
+                const lines = await getLines(h.short); if (t !== soundToken) return;
+                if (!lines.length) throw new Error('empty');
+                let pick;
+                for (let n = 0; n < 8; n++) { pick = urlOf(lines[Math.floor(Math.random() * lines.length)]); if (pick !== prev || lines.length < 2) break }
+                lastUrl = pick;
+                audio.src = lastUrl;
+                await audio.play(); if (t === soundToken) m.textContent = '';
+            } catch (e) {
+                if (t !== soundToken) return;
+                if (e && e.name === 'NotAllowedError') { m.textContent = 'Tap anywhere to hear the hero.'; d.addEventListener('pointerdown', () => audio.play().then(() => { m.textContent = '' }).catch(() => { }), { once: true }) }
+                else m.textContent = 'No voice line available for this hero.';
+            }
+        }
+
+        $('replay').onclick = () => {
+            if (cur) playVoice(cur);
+        };
+
+        load();
+    </script>
+</body>
+
+</html>
