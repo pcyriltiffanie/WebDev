@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dota 2 Hero Archive All</title>
+    <title>Dota 2 API</title>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link
@@ -104,7 +104,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const A = { str: { label: 'Strength', color: '#ec3d06' }, agi: { label: 'Agility', color: '#26e030' }, int: { label: 'Intelligence', color: '#00d9ff' }, all: { label: 'Universal', color: '#c07cf0' } };
+        const A = { 
+            str: { label: 'Strength', color: '#ec3d06' }, 
+            agi: { label: 'Agility', color: '#26e030' }, 
+            int: { label: 'Intelligence', color: '#00d9ff' }, 
+            all: { label: 'Universal', color: '#c07cf0' } 
+            };
         const IMG = 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/';
         const VID = 'https://cdn.cloudflare.steamstatic.com/apps/dota2/videos/dota_react/heroes/renders/';
         const HF = 'https://huggingface.co/datasets/Sqls1/dota2-sounds';
